@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import path from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
-import { renderJson, renderText, runDoctor, type Rule } from '../src/index.ts';
+import { type Rule, renderJson, renderText, runDoctor } from '../src/index.ts';
 
 const fixtures = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fixtures');
 const fixture = (name: string): string => path.join(fixtures, name);
@@ -60,9 +60,7 @@ test('text report shows the service footer only for device findings', async () =
     title: 'fake',
     description: 'fake',
     source: 'test',
-    check: () => [
-      { ruleId: 'fake-device', severity: 'warning', verification: 'device', title: '需要真机确认的问题' },
-    ],
+    check: () => [{ ruleId: 'fake-device', severity: 'warning', verification: 'device', title: '需要真机确认的问题' }],
   };
   const withDevice = await runDoctor({ cwd: fixture('electron-builder-deb'), rules: [deviceRule] });
   const text = renderText(withDevice);
@@ -75,6 +73,7 @@ test('text report shows the service footer only for device findings', async () =
 test('json report round-trips', async () => {
   const report = await runDoctor({ cwd: fixture('misconfigured') });
   const parsed = JSON.parse(renderJson(report)) as typeof report;
+  assert.equal(parsed.schemaVersion, 1);
   assert.equal(parsed.summary.error, report.summary.error);
   assert.equal(parsed.rules.length, 4);
 });

@@ -2,7 +2,14 @@ import path from 'node:path';
 import pkg from '../package.json' with { type: 'json' };
 import { loadProjectContext } from './context.ts';
 import { builtinRules } from './rules/index.ts';
-import type { DoctorReport, Finding, ProjectContext, ProjectSummary, Rule } from './types.ts';
+import {
+  type DoctorReport,
+  type Finding,
+  type ProjectContext,
+  type ProjectSummary,
+  REPORT_SCHEMA_VERSION,
+  type Rule,
+} from './types.ts';
 
 export interface RunOptions {
   /** 要检查的工程目录，默认当前目录。 */
@@ -43,6 +50,7 @@ export async function runDoctor(options: RunOptions = {}): Promise<DoctorReport>
 
   const summary = summarizeFindings(findings);
   return {
+    schemaVersion: REPORT_SCHEMA_VERSION,
     doctorVersion: pkg.version,
     cwd,
     project: summarizeProject(context),

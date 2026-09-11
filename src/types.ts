@@ -75,7 +75,11 @@ export interface ProjectSummary {
   builder: BuilderConfig['kind'] | null;
 }
 
+/** JSON 报告的结构版本。字段有不兼容变化时递增。 */
+export const REPORT_SCHEMA_VERSION = 1;
+
 export interface DoctorReport {
+  schemaVersion: typeof REPORT_SCHEMA_VERSION;
   doctorVersion: string;
   cwd: string;
   project: ProjectSummary;
