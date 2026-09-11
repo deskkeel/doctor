@@ -1,8 +1,10 @@
-# @deskkeel/doctor
+# DeskKeel Doctor
 
-检查一个 Electron 工程能否交付到统信 UOS、银河麒麟。免费、开源、零配置，不上传源码。
+[![CI](https://github.com/deskkeel/doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/deskkeel/doctor/actions/workflows/ci.yml)
 
-> 状态：骨架阶段，尚未发布到 npm。发布前需要移除 `package.json` 中的 `private`，并确认 `src/branding.ts` 中的链接。
+检查一个 Electron 工程能否交付到统信 UOS、银河麒麟。免费、开源、零配置，离线运行，不上传源码。
+
+> 尚未发布到 npm。首个版本发布前，下面的 `npx` 命令还不可用。
 
 ## 使用
 
@@ -29,7 +31,7 @@ doctor 只读取工程自身的 `package.json`、锁文件和 electron-builder /
 - 严重程度：`error`、`warning`、`info`。
 - 验证方式：`local` 表示可以在本地修复；`device` 表示必须在真机上验证。
 
-当前默认规则：
+当前默认规则见 [docs/rules](./docs/rules/README.md)：
 
 | 规则 | 检查内容 |
 | --- | --- |
@@ -38,17 +40,19 @@ doctor 只读取工程自身的 `package.json`、锁文件和 electron-builder /
 | `lockfile` | 锁文件存在且唯一，并与 `packageManager` 字段一致 |
 | `linux-deb-target` | electron-builder 的 linux target 含 deb，或 Forge 配置了 maker-deb |
 
-规则的阈值来源写在各规则源码的 `source` 字段中。没有真机验证来源的规则不会进入默认规则集。
+每条规则都写明判断依据的来源。没有真机验证或官方文档来源的规则不会进入默认规则集。
 
 ## 作为库使用
 
 ```ts
-import { runDoctor, renderText } from '@deskkeel/doctor';
+import { renderText, runDoctor } from '@deskkeel/doctor';
 
 const report = await runDoctor({ cwd: './my-app' });
 console.log(renderText(report));
 process.exitCode = report.exitCode;
 ```
+
+JSON 报告带 `schemaVersion` 字段，字段变化遵循语义化版本。
 
 ## 商业服务
 
@@ -56,6 +60,8 @@ doctor 能判断工程配置是否正确，判断不了应用在真机上是否�
 
 ## 参与
 
-- 新增规则必须写明阈值来源，未经真机验证的规则以候选形式提交，不进入默认规则集。
-- 不引入遥测、网络请求或账号逻辑。
-- 运行 `pnpm check` 通过类型检查和测试。
+见 [CONTRIBUTING.md](./CONTRIBUTING.md)。安全问题见 [SECURITY.md](./SECURITY.md)。
+
+## 许可证
+
+[MIT](./LICENSE)

@@ -65,9 +65,9 @@ async function findLockfiles(cwd: string): Promise<LockfileInfo[]> {
 
 function findElectron(packageJson: PackageJson | null): ElectronDependency | null {
   if (!packageJson) return null;
-  const dev = packageJson.devDependencies?.['electron'];
+  const dev = packageJson.devDependencies?.electron;
   if (typeof dev === 'string') return { spec: dev, field: 'devDependencies' };
-  const prod = packageJson.dependencies?.['electron'];
+  const prod = packageJson.dependencies?.electron;
   if (typeof prod === 'string') return { spec: prod, field: 'dependencies' };
   return null;
 }
@@ -99,7 +99,8 @@ async function detectBuilder(cwd: string, packageJson: PackageJson | null): Prom
   const forge = packageJson?.config?.forge;
   if (isRecord(forge)) return { kind: 'forge', file: 'package.json#config.forge', config: forge };
   if (typeof forge === 'string') {
-    if (forge.endsWith('.json')) return { kind: 'forge', file: forge, ...(await parseStaticConfig(path.join(cwd, forge))) };
+    if (forge.endsWith('.json'))
+      return { kind: 'forge', file: forge, ...(await parseStaticConfig(path.join(cwd, forge))) };
     return { kind: 'forge', file: forge, config: null };
   }
   for (const file of FORGE_DYNAMIC_FILES) {

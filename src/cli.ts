@@ -46,7 +46,7 @@ async function main(argv: string[]): Promise<number> {
   }
 
   const report = await runDoctor({ cwd: values.cwd ?? positionals[0] });
-  const color = !values.json && !values['no-color'] && !process.env['NO_COLOR'] && Boolean(process.stdout.isTTY);
+  const color = !values.json && !values['no-color'] && !process.env.NO_COLOR && Boolean(process.stdout.isTTY);
   process.stdout.write(values.json ? `${renderJson(report)}\n` : renderText(report, { color }));
   return report.exitCode;
 }

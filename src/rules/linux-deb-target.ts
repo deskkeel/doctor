@@ -6,21 +6,23 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 /** 归一化 electron-builder 的 linux.target，返回小写的 target 名列表。 */
 function builderLinuxTargets(config: Record<string, unknown>): string[] {
-  const linux = config['linux'];
+  const linux = config.linux;
   if (!isRecord(linux)) return [];
-  const target = linux['target'];
+  const target = linux.target;
   if (target == null) return [];
   const items = Array.isArray(target) ? target : [target];
   return items
-    .map((item) => (typeof item === 'string' ? item : isRecord(item) && typeof item['target'] === 'string' ? item['target'] : ''))
+    .map((item) =>
+      typeof item === 'string' ? item : isRecord(item) && typeof item.target === 'string' ? item.target : '',
+    )
     .filter((name) => name !== '')
     .map((name) => name.toLowerCase());
 }
 
 function forgeHasDebMaker(config: Record<string, unknown>): boolean {
-  const makers = config['makers'];
+  const makers = config.makers;
   if (!Array.isArray(makers)) return false;
-  return makers.some((maker) => isRecord(maker) && typeof maker['name'] === 'string' && maker['name'].includes('maker-deb'));
+  return makers.some((maker) => isRecord(maker) && typeof maker.name === 'string' && maker.name.includes('maker-deb'));
 }
 
 function cannotInspect(builder: BuilderConfig): Finding {
